@@ -1,5 +1,7 @@
 # Golden Designs / Dynamic 2-Person Infrared Sauna / EZLife Sauna — Home Assistant Integration
 
+*Work in progress - adding pictures still.
+
 This guide documents how to add remote pre-heat control and temperature monitoring to a Golden Designs or Dynamic 2-person far-infrared sauna (tested on models using the YT2R-1.4S controller board, including the DYN-6209-01) using ESPHome and Home Assistant. No proprietary app, no cloud dependency, minimal permanent modifications to the sauna (4 soldered wires). These Saunas come under many different names, the one I have in particular is from Nebraska Furniture Mart sold under the name EZLife.
 
 ---
