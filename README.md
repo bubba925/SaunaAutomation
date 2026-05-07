@@ -49,7 +49,7 @@ To start heating, two button presses are required in sequence: POWER (wakes the 
 - Home Assistant instance running on your network
 - ESPHome add-on installed in Home Assistant
 - Basic soldering iron and multimeter
-- Wiring and WAGO connectors
+- Wiring and WAGO connectors or preferred connection method
 - USB to serial adapter for ESP flashing (not going to cover flashing)
 
 ---
