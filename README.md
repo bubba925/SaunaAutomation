@@ -114,9 +114,6 @@ At the relay board, connect POWER button wires to Relay 1: COM1 and NO1. Connect
 <img width="768" height="1024" alt="09C3DA80-3787-44A0-9E62-AC55F016CE01_1_105_c" src="https://github.com/user-attachments/assets/0eab3627-83ea-4f27-ac4a-62d1fbb3e52a" />
 <br>
 
-### Relays with wires attached from control board
-`[INSERT PHOTO: Relay board with COM and NO terminals wired]`
-
 ### Temperature Sensor Wiring
 
 The DS18B20 module VCC and GND are powered from the AMS1117 3.3V output, the same as the ESP-01. Only the data wire connects to ESP-01 GPIO2.
@@ -127,10 +124,6 @@ The DS18B20 probe is mounted using aluminum tape in the opening left by the remo
 ### AMS1117 and Temp ESP-01 Power
 
 The AMS1117 takes 5V from the relay board's header pin and outputs 3.3V. Connect the 100µF capacitor across the 3.3V output. Connect AMS1117 3.3V output to ESP-01 VCC, and GND to ESP-01 GND.
-
-### Mounting
-
-Mounted everyhting to this ABS junction box mounting plate.
 
 ---
 
@@ -298,7 +291,7 @@ Here is how I setup my controls for the Sauna in Home Assistant. I use a general
 
 
 ### YAML for Sauna Controls in HA
-```
+```yaml
 type: vertical-stack
 cards:
   - type: custom:bubble-card
