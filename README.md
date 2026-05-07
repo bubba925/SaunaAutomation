@@ -1,4 +1,4 @@
-# Golden Designs / Dynamic 2-Person Infrared Sauna / EZLife Sauna — Home Assistant Integration
+# EZLife / Golden Designs / Dynamic 2-Person Infrared Sauna — Home Assistant Integration
 
 **Work in progress - adding final layout pictures still**
 ---
