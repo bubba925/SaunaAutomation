@@ -432,7 +432,7 @@ cards:
 ---
 
 ## Credits and References
-- Not sure who is behind awholenother.com but the write-ups there inspired all of this.
-- [awholenother.com — Adding remote starter to a Costco infrared sauna](https://www.awholenother.com/2025/06/26/sauna-remote-start.html)
-- [awholenother.com — ESPHome sauna controller update](https://www.awholenother.com/2026/02/12/remote-esphome-sauna-controller-update.html)
-- Claude for doing my documentation cause I would never do this manually.
+- Not sure who is behind awholenother.com but the write-ups there inspired all of this
+  - [awholenother.com — Adding remote starter to a Costco infrared sauna](https://www.awholenother.com/2025/06/26/sauna-remote-start.html)
+  - [awholenother.com — ESPHome sauna controller update](https://www.awholenother.com/2026/02/12/remote-esphome-sauna-controller-update.html)
+- Claude for doing my documentation cause I would never do this manually
