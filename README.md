@@ -106,14 +106,15 @@ Open the inside control panel housing. Locate the POWER and WORK/START tactile s
 
 At the relay board, connect POWER button wires to Relay 1: COM1 and NO1. Connect WORK button wires to Relay 2: COM2 and NO2. NC terminals are left unconnected.
 
+### Control board for reference
 `[INSERT PHOTO: Control board front with model]`
+<br>
 
----
-
+### Control board with wires attached
 <img width="768" height="1024" alt="09C3DA80-3787-44A0-9E62-AC55F016CE01_1_105_c" src="https://github.com/user-attachments/assets/0eab3627-83ea-4f27-ac4a-62d1fbb3e52a" />
+<br>
 
----
-
+### Relays with wires attached from control board
 `[INSERT PHOTO: Relay board with COM and NO terminals wired]`
 
 ### Temperature Sensor Wiring
@@ -277,22 +278,24 @@ Here is how I setup my controls for the Sauna in Home Assistant. I use a general
 
 ### Example of controller - Sauna OFF
 <img width="567" height="486" alt="image" src="https://github.com/user-attachments/assets/6bcd0e8e-149d-4f7d-861d-f0c111f24ff4" />
+<br>
 
 **Notes:**
 
 - I like to display temp/wattage when it is off.
 - Schedule feeds an automation which turns on a helper so the automation triggers at the specified time and then turns off the scheduler after it runs.
 
----
+
 
 ### Example of controller - Sauna ON
 <img width="577" height="534" alt="image" src="https://github.com/user-attachments/assets/040bf5bd-8c5d-4416-a0a8-38fb7ec5f31e" />
+<br>
 
 **Notes:**
 
 - Have a conditional timer for total time Sauna has been running based on last changed power entity.
 
----
+
 
 ### YAML for Sauna Controls in HA
 ```
