@@ -1,6 +1,7 @@
 # Golden Designs / Dynamic 2-Person Infrared Sauna / EZLife Sauna — Home Assistant Integration
 
-*Work in progress - adding final layout pictures still.
+**Work in progress - adding final layout pictures still**
+---
 
 This guide documents how to add remote pre-heat control and temperature monitoring to an EZLife / Golden Designs / Dynamic 2-person far-infrared sauna (tested on models using the YT2R-1.4S controller board, including the DYN-6209-01) using ESPHome and Home Assistant. No proprietary app, no cloud dependency, minimal permanent modifications to the sauna (4 soldered wires). These Saunas come under many different names, the one I have in particular is from Nebraska Furniture Mart sold under the name EZLife. Seems like these saunas are re-branded under multiple different names and sold at a variety of stores like Nebraska Furniture Mart and Costco.
 
@@ -276,11 +277,15 @@ Here is how I setup my controls for the Sauna in Home Assistant. I use a general
 ### Example of controller - Sauna OFF
 <img width="567" height="486" alt="image" src="https://github.com/user-attachments/assets/6bcd0e8e-149d-4f7d-861d-f0c111f24ff4" />
 
+**Notes:**
+
 - I like to display temp/wattage when it is off.
 - Schedule feeds an automation which turns on a helper so the automation triggers at the specified time and then turns off the scheduler after it runs.
 
 ### Example of controller - Sauna ON
 <img width="577" height="534" alt="image" src="https://github.com/user-attachments/assets/040bf5bd-8c5d-4416-a0a8-38fb7ec5f31e" />
+
+**Notes:**
 
 - Have a conditional timer for total time Sauna has been running based on last changed power entity.
 
@@ -423,7 +428,7 @@ cards:
         }
 ```
 
-
+---
 
 ## Credits and References
 - Not sure who is behind awholenother.com but the write-ups there inspired all of this.
