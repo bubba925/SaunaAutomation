@@ -1,4 +1,4 @@
-# Golden Designs / Dynamic 2-Person Infrared Sauna — Home Assistant Integration
+# Golden Designs / Dynamic 2-Person Infrared Sauna / EZLife Sauna — Home Assistant Integration
 
 This guide documents how to add remote pre-heat control and temperature monitoring to a Golden Designs or Dynamic 2-person far-infrared sauna (tested on models using the YT2R-1.4S controller board, including the DYN-6209-01) using ESPHome and Home Assistant. No proprietary app, no cloud dependency, no permanent modifications to the sauna.
 
@@ -30,7 +30,6 @@ To start heating, two button presses are required in sequence: POWER (wakes the 
 | LC Technology ESP8266 Relay X2 board | ESP-01 based, dual relay, UART-controlled | $10 |
 | TOBSUN or equivalent 12V to 5V DC-DC buck converter | Screw terminal type | $8 |
 | 680µF electrolytic capacitor | Across 5V output of buck converter | $1 |
-| 22 AWG silicone hookup wire | For button pad connections | $8 |
 | Molex Micro-Fit 3.0 10-pin connector kit | For 12V power tap from panel harness | $8 |
 | Shelly 16A | Power monitor on wall outlet | $25 |
 
@@ -42,13 +41,14 @@ To start heating, two button presses are required in sequence: POWER (wakes the 
 | AMS1117 3.3V regulator breakout | Powers the temp ESP-01 from 5V | $6 (10-pack) |
 | Waterproof DS18B20 module | Breakout board with built-in pull-up resistor | $8 |
 | 100µF electrolytic capacitor | Across 3.3V output of AMS1117 | $1 |
-| USB-to-serial adapter (FTDI or CH340, 3.3V) | For initial flashing only | $8 |
 
 ### Already Assumed
 
 - Home Assistant instance running on your network
 - ESPHome add-on installed in Home Assistant
 - Basic soldering iron and multimeter
+- Wiring and WAGO connectors
+- USB to serial adapter for ESP flashing (not going to cover flashing)
 
 **Total new spend: approximately $55–65**
 
@@ -105,8 +105,9 @@ Connect buck converter 5V and GND outputs to the IN+ and IN- screw terminals on 
 Open the inside control panel housing. Locate the POWER and WORK/START tactile switches. Use a multimeter in continuity mode to identify the two active terminals on each button. Solder a pair of 22 AWG silicone wires to each button and route them to the roof alongside the existing harness.
 
 At the relay board, connect POWER button wires to Relay 1: COM1 and NO1. Connect WORK button wires to Relay 2: COM2 and NO2. NC terminals are left unconnected.
+`[INSERT PHOTO: Control board front with model]`
 
-`[INSERT PHOTO: Control panel PCB with wires on POWER and WORK button pads]`
+`[<img width="768" height="1024" alt="09C3DA80-3787-44A0-9E62-AC55F016CE01_1_105_c" src="https://github.com/user-attachments/assets/0eab3627-83ea-4f27-ac4a-62d1fbb3e52a" />]`
 
 `[INSERT PHOTO: Relay board with COM and NO terminals wired]`
 
@@ -114,8 +115,7 @@ At the relay board, connect POWER button wires to Relay 1: COM1 and NO1. Connect
 
 The DS18B20 module VCC and GND are powered directly from the buck converter 5V output — not from the ESP-01. Only the data wire connects to the ESP-01 GPIO2. The module has a pull-up resistor built into its breakout board so no external resistor is needed.
 
-The DS18B20 probe is mounted using aluminum tape in the opening left by the removed 3.5mm aux jack on the inside control panel. The sauna has built-in Bluetooth for audio so the aux port is not needed. The probe tip sits in the interior airspace at approximately seated head height.
-
+The DS18B20 probe is mounted using aluminum tape in the opening left by the removed 3.5mm aux jack on the inside control panel. The sauna has built-in Bluetooth for audio so the aux port is not needed.
 `[INSERT PHOTO: DS18B20 module mounted at aux port opening]`
 
 ### AMS1117 and Temp ESP-01 Power
@@ -127,28 +127,6 @@ The AMS1117 takes 5V from the relay board's header pin and outputs 3.3V. Connect
 Print PCB standoffs in PETG (not PLA — sauna roof temperatures will warp PLA). Mount all boards to a piece of plywood using standoffs and M3 screws. Screw the plywood to the roof framing beside the existing power supply box.
 
 `[INSERT PHOTO: Completed assembly mounted on roof backplate]`
-
----
-
-## Flashing ESPHome
-
-Both ESP-01 boards require a USB-to-serial adapter for the initial flash. Use the ESPHome web flasher at **web.esphome.io** in Chrome or Edge — no software installation required.
-
-Set your FTDI or CH340 adapter to **3.3V logic** before connecting anything. 5V logic will damage the ESP-01.
-
-### Flash Mode Wiring
-
-| Adapter | Board header pin |
-|---|---|
-| GND | GND |
-| 5V | 5V (relay board) or AMS1117 input (temp board) |
-| TX | RX |
-| RX | TX |
-| GND | CLK (GPIO0) — hold LOW at power-on to enter flash mode |
-
-Bridge CLK to GND before applying power. Once the flash begins GPIO0 can be released. All subsequent updates are done OTA over WiFi.
-
-`[INSERT PHOTO: FTDI adapter wired to ESP-01 header]`
 
 ---
 
@@ -285,95 +263,11 @@ sensor:
           send_every: 4
 ```
 
----
-
-## Ready Notification — Sending to Whoever Started the Sauna
-
-The simplest way to notify the right person is to store who started the session when the button is pressed, then use that to route the notification.
-
-### Step 1 — Create a helper
-
-In Home Assistant go to Settings → Devices and Services → Helpers and create a **Text** helper named `sauna_started_by`. Leave it blank by default.
-
-### Step 2 — Two dashboard buttons (one per person)
-
-Instead of pressing Sauna Start directly, each person presses their own button which sets the helper and starts the sauna. Add two **Button card** actions to your dashboard, each calling a script:
-
-```yaml
-# Script for you
-sauna_start_me:
-  sequence:
-    - service: input_text.set_value
-      target:
-        entity_id: input_text.sauna_started_by
-      data:
-        value: "notify.mobile_app_your_phone"
-    - service: switch.turn_on
-      target:
-        entity_id: switch.sauna_outlet
-    - delay:
-        seconds: 5
-    - service: button.press
-      target:
-        entity_id: button.sauna_start
-```
-
-```yaml
-# Script for your wife
-sauna_start_wife:
-  sequence:
-    - service: input_text.set_value
-      target:
-        entity_id: input_text.sauna_started_by
-      data:
-        value: "notify.mobile_app_wife_phone"
-    - service: switch.turn_on
-      target:
-        entity_id: switch.sauna_outlet
-    - delay:
-        seconds: 5
-    - service: button.press
-      target:
-        entity_id: button.sauna_start
-```
-
-Replace `notify.mobile_app_your_phone` and `notify.mobile_app_wife_phone` with your actual mobile app notify service names from Settings → Devices and Services → Mobile App.
-
-### Step 3 — Ready notification automation
-
-```yaml
-alias: Sauna Ready Alert
-trigger:
-  - platform: numeric_state
-    entity_id: sensor.sauna_temperature
-    above: 55
-action:
-  - service: "{{ states('input_text.sauna_started_by') }}"
-    data:
-      message: >
-        Sauna is ready. Current temperature: 
-        {{ states('sensor.sauna_temperature') }}°C
-      title: "Sauna Ready"
-```
-
-When the temperature crosses 55°C (adjust to your preferred ready temperature), the notification goes to whichever phone started the session. If neither script was used and the helper is blank the notification will fail silently — which is fine since a manual button press from the ESPHome dashboard does not need a notification routed to a specific person.
-
----
-
-## Safety Notes
-
-- Keep the Shelly 16A on the wall plug in place as a hard master kill independent of any software state.
-- Do not mount any electronics inside the heated cabin. All boards belong on the roof.
-- Do not bypass or disconnect the OEM NTC temperature sensor, thermal cutoff, or internal fuse.
-- Use PETG or ASA filament for any 3D printed mounting components. PLA will deform at sauna roof temperatures.
-- Remote pre-heating before arrival is the intended use case. The OEM 90-minute auto-off timer remains intact as the primary runtime limiter.
 
 ---
 
 ## Credits and References
-
+- Not sure who is behind awholenother.com but the write-ups there inspired all of this.
 - [awholenother.com — Adding remote starter to a Costco infrared sauna](https://www.awholenother.com/2025/06/26/sauna-remote-start.html)
 - [awholenother.com — ESPHome sauna controller update](https://www.awholenother.com/2026/02/12/remote-esphome-sauna-controller-update.html)
-- [ESPHome one_wire documentation](https://esphome.io/components/one_wire)
-- [Tasmota LC Technology device page](https://templates.blakadder.com/LC-ESP01-2R-5V.html)
-- [killee/Sauna-controller on GitHub](https://github.com/killee/Sauna-controller)
+- Claude for doing my documentation cause I would never do this manually.
