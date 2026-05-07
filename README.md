@@ -105,7 +105,7 @@ Open the inside control panel housing. Locate the POWER and WORK/START tactile s
 At the relay board, connect POWER button wires to Relay 1: COM1 and NO1. Connect WORK button wires to Relay 2: COM2 and NO2. NC terminals are left unconnected.
 `[INSERT PHOTO: Control board front with model]`
 
-`[<img width="768" height="1024" alt="09C3DA80-3787-44A0-9E62-AC55F016CE01_1_105_c" src="https://github.com/user-attachments/assets/0eab3627-83ea-4f27-ac4a-62d1fbb3e52a" />]`
+[<img width="768" height="1024" alt="09C3DA80-3787-44A0-9E62-AC55F016CE01_1_105_c" src="https://github.com/user-attachments/assets/0eab3627-83ea-4f27-ac4a-62d1fbb3e52a" />]
 
 `[INSERT PHOTO: Relay board with COM and NO terminals wired]`
 
