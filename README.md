@@ -6,7 +6,7 @@ This guide documents how to add remote pre-heat control and temperature monitori
 
 ## Wiring Overview
 
-![Wiring Diagram]()
+![Wiring Diagram](./wiring-diagram.svg)
 
 ---
 
