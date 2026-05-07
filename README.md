@@ -1,6 +1,6 @@
 # Golden Designs / Dynamic 2-Person Infrared Sauna / EZLife Sauna — Home Assistant Integration
 
-This guide documents how to add remote pre-heat control and temperature monitoring to a Golden Designs or Dynamic 2-person far-infrared sauna (tested on models using the YT2R-1.4S controller board, including the DYN-6209-01) using ESPHome and Home Assistant. No proprietary app, no cloud dependency, no permanent modifications to the sauna.
+This guide documents how to add remote pre-heat control and temperature monitoring to a Golden Designs or Dynamic 2-person far-infrared sauna (tested on models using the YT2R-1.4S controller board, including the DYN-6209-01) using ESPHome and Home Assistant. No proprietary app, no cloud dependency, no permanent modifications to the sauna. These Saunas come under many different names, the one I have in particular is from Nebraska Furniture Mart sold under the name EZLife.
 
 ---
 
@@ -263,6 +263,155 @@ sensor:
 
 
 ---
+
+### Home Assistant Controls
+Here is how I setup my controls for the Sauna in Home Assistant. I use a general dashboard with quick controls and pop up cards on my phone for anything manual.
+
+- I assume anything about 1000w means the sauna is on, draws ~1600w while heating. Theoretically you could turn off the heat and it would still be on but I dont have a use case for that. This also controls an automation for notification of the Sauna being on for too long.
+- I plan on adding a feature to the start/scheduling portion to send a notification to the user that started the sauna when it is pre-heated to about 130F.
+
+<img width="567" height="486" alt="image" src="https://github.com/user-attachments/assets/6bcd0e8e-149d-4f7d-861d-f0c111f24ff4" />
+<img width="577" height="534" alt="image" src="https://github.com/user-attachments/assets/040bf5bd-8c5d-4416-a0a8-38fb7ec5f31e" />
+
+```
+type: vertical-stack
+cards:
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: "#sauna-popup"
+    name: Sauna
+    icon: mdi:heat-wave
+    margin_top_mobile: 16px
+    margin_top_desktop: 74px
+    width_desktop: 540px
+    bg_color: rgba(30, 30, 30, 0.95)
+    bg_blur: true
+    styles: |
+      .bubble-pop-up-container {
+        backdrop-filter: blur(50px) !important;
+      }
+      .bubble-pop-up {
+        border: 1px solid rgba(255, 87, 34, 0.3) !important;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+      }
+  - type: custom:mushroom-template-card
+    primary: |-
+      {% if states('sensor.sauna_power_power') | float > 1000 %}
+        🔥 Sauna is Heating
+      {% else %}
+        ❄️ Sauna is Off
+      {% endif %}
+    secondary: |2-
+            {% if states('sensor.sauna_power_power') | float(0) > 1000 %}
+              {{ states('sensor.sauna_power_power') | float(0) | round(0) }}W · {{ states('sensor.sauna_temperature_sauna_temperature') | round(0) }}°F
+            {% else %}
+              {{ states('sensor.sauna_temperature_sauna_temperature') | round(0) }}°F · Ready to start ({{ states('sensor.sauna_power_power') | float(0) | round(0) }}W)
+            {% endif %}
+    icon: |-
+      {% if states('sensor.sauna_power_power') | float > 1000 %}
+        mdi:heat-wave
+      {% else %}
+        mdi:sauna
+      {% endif %}
+    color: |-
+      {% if states('sensor.sauna_power_power') | float > 1000 %}
+        deep-orange
+      {% else %}
+        grey
+      {% endif %}
+    features_position: bottom
+    card_mod:
+      style: |
+        ha-card {
+          {% if states('sensor.sauna_power_power') | float > 1000 %}
+          background: linear-gradient(135deg, rgba(255, 87, 34, 0.25), rgba(255, 138, 101, 0.15));
+          border: 1px solid rgba(255, 87, 34, 0.4);
+          box-shadow: 0 4px 12px rgba(255, 87, 34, 0.3);
+          {% else %}
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.1);
+          {% endif %}
+        }
+  - type: conditional
+    conditions:
+      - condition: numeric_state
+        entity: sensor.sauna_power_power
+        above: 1000
+    card:
+      type: custom:mushroom-template-card
+      icon: mdi:timer-outline
+      color: deep-orange
+      features_position: bottom
+      primary: >-
+        {% set start =
+        as_timestamp(states.sensor.sauna_power_power.last_changed) %}
+                {% set elapsed = (now().timestamp() - start) | int %}
+                {% set hours = elapsed // 3600 %}
+                {% set minutes = (elapsed % 3600) // 60 %}
+                {% if hours > 0 %}
+                  Sauna has been on for {{ hours }}hours {{ minutes }}minutes
+                {% else %}
+                  Sauna has been on for {{ minutes }} minutes
+                {% endif %}
+      card_mod:
+        style: |
+          ha-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+          }
+  - type: horizontal-stack
+    cards:
+      - type: custom:mushroom-template-card
+        primary: Start Sauna
+        icon: mdi:play-circle
+        icon_color: green
+        tap_action:
+          action: call-service
+          service: button.press
+          target:
+            entity_id: button.sauna_sauna_start
+        card_mod:
+          style: |
+            ha-card {
+              background: linear-gradient(135deg, rgba(76, 175, 80, 0.25), rgba(129, 199, 132, 0.15));
+              border: 1px solid rgba(76, 175, 80, 0.3);
+            }
+      - type: custom:mushroom-template-card
+        primary: Stop Sauna
+        icon: mdi:stop-circle
+        icon_color: red
+        tap_action:
+          action: call-service
+          service: button.press
+          target:
+            entity_id: button.sauna_sauna_power
+        card_mod:
+          style: |
+            ha-card {
+              background: linear-gradient(135deg, rgba(244, 67, 54, 0.25), rgba(239, 83, 80, 0.15));
+              border: 1px solid rgba(244, 67, 54, 0.3);
+            }
+  - type: custom:mushroom-title-card
+    title: ⏰ Schedule
+  - type: entities
+    entities:
+      - entity: input_boolean.sauna_schedule_enabled
+        name: Enable Schedule
+        icon: mdi:clock-outline
+      - entity: input_datetime.sauna_schedule_time
+        name: Start Time
+        icon: mdi:clock-start
+    card_mod:
+      style: |
+        ha-card {
+          background: rgba(255,255,255,0.05);
+          border: 1px solid rgba(255,255,255,0.1);
+          border-radius: 12px;
+        }
+```
+
+
 
 ## Credits and References
 - Not sure who is behind awholenother.com but the write-ups there inspired all of this.
