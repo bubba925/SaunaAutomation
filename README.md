@@ -50,8 +50,6 @@ To start heating, two button presses are required in sequence: POWER (wakes the 
 - Wiring and WAGO connectors
 - USB to serial adapter for ESP flashing (not going to cover flashing)
 
-**Total new spend: approximately $55–65**
-
 ---
 
 ## Why Not Use the OEM Temperature Sensor
