@@ -274,11 +274,13 @@ Here is how I setup my controls for the Sauna in Home Assistant. I use a general
 
 ### Example of controller - Sauna OFF
 <img width="567" height="486" alt="image" src="https://github.com/user-attachments/assets/6bcd0e8e-149d-4f7d-861d-f0c111f24ff4" />
+
 - I like to display temp/wattage when it is off.
 - Schedule feeds an automation which turns on a helper so the automation triggers at the specified time and then turns off the scheduler after it runs.
 
 ### Example of controller - Sauna ON
 <img width="577" height="534" alt="image" src="https://github.com/user-attachments/assets/040bf5bd-8c5d-4416-a0a8-38fb7ec5f31e" />
+
 - Have a conditional timer for total time Sauna has been running based on last changed power entity.
 
 ### YAML for Sauna Controls in HA
