@@ -51,7 +51,8 @@ To start heating, two button presses are required in sequence: POWER (wakes the 
 - ESPHome add-on installed in Home Assistant
 - Basic soldering iron and multimeter
 - Wiring and WAGO connectors or preferred connection method
-- USB to serial adapter for ESP flashing (not going to cover flashing)
+- Preferred mounting solution, I used [this junction box mounting plate](https://a.co/d/01tzoLNM)
+- USB to serial adapter for ESP flashing (flashing instructions not covered here)
 
 ---
 
@@ -107,15 +108,17 @@ At the relay board, connect POWER button wires to Relay 1: COM1 and NO1. Connect
 
 `[INSERT PHOTO: Control board front with model]`
 
-### Soldered wires onto buttons
+---
 
 <img width="768" height="1024" alt="09C3DA80-3787-44A0-9E62-AC55F016CE01_1_105_c" src="https://github.com/user-attachments/assets/0eab3627-83ea-4f27-ac4a-62d1fbb3e52a" />
+
+---
 
 `[INSERT PHOTO: Relay board with COM and NO terminals wired]`
 
 ### Temperature Sensor Wiring
 
-The DS18B20 module VCC and GND are powered directly from the buck converter 5V output — not from the ESP-01. Only the data wire connects to the ESP-01 GPIO2. The module has a pull-up resistor built into its breakout board so no external resistor is needed.
+The DS18B20 module VCC and GND are powered from the AMS1117 3.3V output, the same as the ESP-01. Only the data wire connects to ESP-01 GPIO2.
 
 The DS18B20 probe is mounted using aluminum tape in the opening left by the removed 3.5mm aux jack on the inside control panel. The sauna has built-in Bluetooth for audio so the aux port is not needed.
 `[INSERT PHOTO: DS18B20 module mounted at aux port opening]`
@@ -126,9 +129,7 @@ The AMS1117 takes 5V from the relay board's header pin and outputs 3.3V. Connect
 
 ### Mounting
 
-Print PCB standoffs in PETG (not PLA — sauna roof temperatures will warp PLA). Mount all boards to a piece of plywood using standoffs and M3 screws. Screw the plywood to the roof framing beside the existing power supply box.
-
-`[INSERT PHOTO: Completed assembly mounted on roof backplate]`
+Mounted everyhting to this ABS junction box mounting plate.
 
 ---
 
@@ -268,10 +269,10 @@ sensor:
 
 ---
 
-### Home Assistant Controls
+## Home Assistant Controls
 Here is how I setup my controls for the Sauna in Home Assistant. I use a general dashboard with quick controls and pop up cards on my phone for anything manual.
 
-- I assume anything about 1000w means the sauna is on, draws ~1600w while heating. Theoretically you could turn off the heat and it would still be on but I dont have a use case for that. This also controls an automation for notification of the Sauna being on for too long.
+- I assume anything above 1000w means the sauna is on, draws ~1600w while heating. Theoretically you could turn off the heat and it would still be on but I dont have a use case for that. This also controls an automation for notification of the Sauna being on for too long.
 - I plan on adding a feature to the start/scheduling portion to send a notification to the user that started the sauna when it is pre-heated to about 130F.
 
 ### Example of controller - Sauna OFF
@@ -282,12 +283,16 @@ Here is how I setup my controls for the Sauna in Home Assistant. I use a general
 - I like to display temp/wattage when it is off.
 - Schedule feeds an automation which turns on a helper so the automation triggers at the specified time and then turns off the scheduler after it runs.
 
+---
+
 ### Example of controller - Sauna ON
 <img width="577" height="534" alt="image" src="https://github.com/user-attachments/assets/040bf5bd-8c5d-4416-a0a8-38fb7ec5f31e" />
 
 **Notes:**
 
 - Have a conditional timer for total time Sauna has been running based on last changed power entity.
+
+---
 
 ### YAML for Sauna Controls in HA
 ```
