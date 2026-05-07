@@ -27,20 +27,20 @@ To start heating, two button presses are required in sequence: POWER (wakes the 
 
 | Item | Notes | Approx. Cost |
 |---|---|---|
-| LC Technology ESP8266 Relay X2 board | ESP-01 based, dual relay, UART-controlled | $10 |
-| TOBSUN or equivalent 12V to 5V DC-DC buck converter | Screw terminal type | $8 |
-| 680µF electrolytic capacitor | Across 5V output of buck converter | $1 |
-| Molex Micro-Fit 3.0 10-pin connector kit | For 12V power tap from panel harness | $8 |
-| Shelly 16A | Power monitor on wall outlet | $25 |
+| [LC Technology ESP8266 Relay X2 board](https://a.co/d/0howLEoG) | ESP-01 based, dual relay, UART-controlled | $10 |
+| [TOBSUN or equivalent 12V to 5V DC-DC buck converter](https://a.co/d/01iOdCmf) | Screw terminal type | $8 |
+| [680µF electrolytic capacitor](https://a.co/d/05bnxP4j) | Across 5V output of buck converter | $1 (Variety Pack) |
+| [Molex Micro-Fit 3.0 10-pin connector kit](https://a.co/d/01lkA7RM) | For 12V power tap from panel harness | $8 |
+| [Shelly 16A](https://a.co/d/0gMgNsz7) | Power monitor on wall outlet | $25 |
 
 ### Temperature Monitoring
 
 | Item | Notes | Approx. Cost |
 |---|---|---|
-| ESP-01 module | Standalone, not the relay board | $4 |
-| AMS1117 3.3V regulator breakout | Powers the temp ESP-01 from 5V | $6 (10-pack) |
-| Waterproof DS18B20 module | Breakout board with built-in pull-up resistor | $8 |
-| 100µF electrolytic capacitor | Across 3.3V output of AMS1117 | $1 |
+| [ESP-01 module](https://a.co/d/03ptQbaO) | Standalone, not the relay board | $4 |
+| [AMS1117 3.3V regulator breakout](https://a.co/d/06HKiK6P) | Powers the temp ESP-01 from 5V | $6 (10-pack) |
+| [Waterproof DS18B20 module](https://a.co/d/0awZXOCP) | Breakout board with built-in pull-up resistor | $8 |
+| [100µF electrolytic capacitor](https://a.co/d/05bnxP4j) | Across 3.3V output of AMS1117 | $1 (Variety Pack) |
 
 ### Already Assumed
 
