@@ -76,8 +76,6 @@ The Shelly exposes three entities to Home Assistant automatically via its native
 - `sensor.sauna_outlet_power` — live wattage draw in watts
 - `sensor.sauna_outlet_energy` — cumulative energy in kWh
 
-Use `switch.sauna_outlet` as the first action (turn on) and last line of defense (turn off) in all automations. The Shelly operates at the AC mains level independently of the ESPHome devices.
-
 ---
 
 ## Wiring
