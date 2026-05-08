@@ -1,8 +1,5 @@
 # EZLife / Golden Designs / Dynamic 2-Person Infrared Sauna — Home Assistant Integration
 
-**Work in progress - adding final layout pictures still**
----
-
 This guide documents how to add remote pre-heat control and temperature monitoring to an EZLife / Golden Designs / Dynamic 2-person far-infrared sauna (tested on models using the YT2R-1.4S controller board, including the DYN-6209-01) using ESPHome and Home Assistant. No proprietary app, no cloud dependency, minimal permanent modifications to the sauna (4 soldered wires). These Saunas come under many different names, the one I have in particular is from Nebraska Furniture Mart sold under the name EZLife. Seems like these saunas are re-branded under multiple different names and sold at a variety of stores like Nebraska Furniture Mart and Costco.
 
 ---
@@ -87,18 +84,22 @@ The Shelly exposes three entities to Home Assistant automatically via its native
 The roof power supply box has labeled connectors. The two connectors silkscreened "12V" on the power supply are switched — only live when the sauna is already powered on. These are not suitable.
 
 The correct 12V source is a pair of wires on the 10-pin Micro-Fit 3.0 harness running between the inside control panel and the roof power supply. On this build the correct pair was the **black and green wire**. This was confirmed by probing with a multimeter in idle state and verifying heater operation was not interrupted when the pair was loaded. Create a Y-splice using a Micro-Fit 3.0 pass-through cable — do not cut the original harness.
+<img width="479" height="359" alt="image" src="https://github.com/user-attachments/assets/4c26f71e-aabd-420f-948e-48bb5ea51856" />
 
-`[INSERT PHOTO: Micro-Fit harness with confirmed 12V pair identified]`
+
 
 ### Buck Converter
 
 Connect the 12V pair to the INPUT terminals of the buck converter. Verify 5.0V at the OUTPUT terminals. Connect the 680µF electrolytic capacitor across the OUTPUT terminals observing polarity (long leg to positive). This prevents both ESPs from failing to boot when AC power is restored due to slow voltage ramp-up.
+<img width="564" height="410" alt="image" src="https://github.com/user-attachments/assets/927f8ea2-84af-451b-a462-7d412c43e047" />
 
-`[INSERT PHOTO: Buck converter with capacitor across output terminals]`
 
 ### Relay Board Power
 
 Connect buck converter 5V and GND outputs to the IN+ and IN- screw terminals on the LC Technology relay board. The AMS1117 3.3V regulator for the temperature ESP-01 is powered from the **5V pin on the right-side header of the relay board**, not directly from the buck converter.
+<img width="630" height="428" alt="image" src="https://github.com/user-attachments/assets/bfc76d29-a452-4ea4-b5c3-27d5fe7b6fd2" />
+
+
 
 ### Button Pad Wiring
 
@@ -107,19 +108,17 @@ Open the inside control panel housing. Locate the POWER and WORK/START tactile s
 At the relay board, connect POWER button wires to Relay 1: COM1 and NO1. Connect WORK button wires to Relay 2: COM2 and NO2. NC terminals are left unconnected.
 
 ### Control board for reference
-`[INSERT PHOTO: Control board front with model]`
-<br>
+<img width="363" height="543" alt="image" src="https://github.com/user-attachments/assets/9d61a30b-6bd1-423e-93b8-85498705a4d1" />
 
 ### Control board with wires attached
-<img width="768" height="1024" alt="09C3DA80-3787-44A0-9E62-AC55F016CE01_1_105_c" src="https://github.com/user-attachments/assets/0eab3627-83ea-4f27-ac4a-62d1fbb3e52a" />
-<br>
+<img width="355" height="483" alt="image" src="https://github.com/user-attachments/assets/0b86e3fb-8a0e-4847-90b3-780d7c083c81" />
 
 ### Temperature Sensor Wiring
-
 The DS18B20 module VCC and GND are powered from the AMS1117 3.3V output, the same as the ESP-01. Only the data wire connects to ESP-01 GPIO2.
 
 The DS18B20 probe is mounted using aluminum tape in the opening left by the removed 3.5mm aux jack on the inside control panel. The sauna has built-in Bluetooth for audio so the aux port is not needed.
-`[INSERT PHOTO: DS18B20 module mounted at aux port opening]`
+<img width="471" height="339" alt="image" src="https://github.com/user-attachments/assets/b3eb4b90-1863-4cc1-ab94-b93eaa74d8b0" />
+
 
 ### AMS1117 and Temp ESP-01 Power
 
