@@ -384,10 +384,9 @@ cards:
         icon: mdi:play-circle
         icon_color: green
         tap_action:
-          action: call-service
-          service: button.press
-          target:
-            entity_id: button.sauna_sauna_start
+          action: perform-action
+          target: {}
+          perform_action: script.sauna_smart_start
         card_mod:
           style: |
             ha-card {
@@ -428,24 +427,78 @@ cards:
         }
 ```
 
+### Smart Sauna Start
+- Has some logic since we dont have status on the power button - if the sauna doesnt start (wattage > 1000w) within 6 seconds it will send the start sequence again since it most likely turned the sauna off because power was left on.
+- Captures the UUID for user initiation and notification.
+```yaml
+sauna_smart_start:
+  alias: "Sauna - Smart Start"
+  description: >
+    Guards against double-pressing power, retries once if wattage does not 
+    climb after the start sequence. Also captures the initiating user for 
+    pre-heat notification.
+  sequence:
+    # Store who initiated — only if triggered by a real user (not a schedule/system call)
+    - if:
+        - condition: template
+          value_template: "{{ context.user_id is not none and context.user_id != '' }}"
+      then:
+        - service: input_text.set_value
+          target:
+            entity_id: input_text.sauna_initiated_by
+          data:
+            value: "{{ context.user_id }}"
+    # Bail out if already heating
+    - condition: numeric_state
+      entity_id: sensor.sauna_power_power
+      below: 1000
+    # First start attempt
+    - service: button.press
+      target:
+        entity_id: button.sauna_sauna_start
+    # Wait to see if wattage climbs
+    - delay:
+        seconds: 6
+    # Retry once if sauna did not start (covers accidental power-off case)
+    - if:
+        - condition: numeric_state
+          entity_id: sensor.sauna_power_power
+          below: 1000
+      then:
+        - service: button.press
+          target:
+            entity_id: button.sauna_sauna_start
+```
+
+### Automation for the scheduled start
+- Create a helper toggle called sauna schedule enabled.
+- Create helper time called sauna schedule time.
+- Script uses the toggle and time to run the start script and then turn off the toggle.
+```yaml
+  alias: Sauna Scheduled Start
+  description: ""
+  triggers:
+    - at: input_datetime.sauna_schedule_time
+      trigger: time
+  conditions:
+    - condition: state
+      entity_id: input_boolean.sauna_schedule_enabled
+      state:
+        - "on"
+  actions:
+    - action: script.sauna_smart_start
+      data: {}
+    - action: input_boolean.turn_off
+      metadata: {}
+      target:
+        entity_id: input_boolean.sauna_schedule_enabled
+      data: {}
+```
+
 ### Automation for notifying the user that initiated the Sauna of target temp
 - Create a Text Helper named "Sauna Initiated By" with max length of 255 characters.
 - Find your User ID's and the notification services - UUID is in Settings -> People -> Users -> Click a user -> At the top. Notification service should be in the mobile app device.
 
-### Automation YAML for Capturing a manual start
-```yaml
-- alias: "Sauna - Capture Manual Start User"
-  description: Stores the HA user who pressed the Start button
-  trigger:
-    - platform: state
-      entity_id: button.sauna_sauna_start
-  action:
-    - service: input_text.set_value
-      target:
-        entity_id: input_text.sauna_initiated_by
-      data:
-        value: "{{ trigger.to_state.context.user_id }}"
-```
 
 ### Automation YAML for Capturing a Scheduled Start
 ```yaml
