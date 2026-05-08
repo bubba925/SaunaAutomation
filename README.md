@@ -115,6 +115,8 @@ At the relay board, connect POWER button wires to Relay 1: COM1 and NO1. Connect
 
 ### AMS1117
 The AMS1117 takes 5V from the relay board's header pin and outputs 3.3V. Connect the 100µF capacitor across the 3.3V output. Connect AMS1117 3.3V/GND output to ESP-01 and DS18B20.
+<img width="412" height="503" alt="image" src="https://github.com/user-attachments/assets/7573d3f6-0015-4aa0-a9d3-19dc7e80b9d8" />
+(Will get a better picture but the top small board is the AMS1117, right board is ESP-01 and Center is the DS18B20 board with a built in resistor.
 
 ### Temperature Sensor Wiring
 Only the data wire connects to ESP-01 GPIO2.
