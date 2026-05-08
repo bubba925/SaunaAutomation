@@ -97,32 +97,30 @@ Connect the 12V pair to the INPUT terminals of the buck converter. Verify 5.0V a
 ### Relay Board Power
 
 Connect buck converter 5V and GND outputs to the IN+ and IN- screw terminals on the LC Technology relay board. The AMS1117 3.3V regulator for the temperature ESP-01 is powered from the **5V pin on the right-side header of the relay board**, not directly from the buck converter.
-<img width="630" height="428" alt="image" src="https://github.com/user-attachments/assets/bfc76d29-a452-4ea4-b5c3-27d5fe7b6fd2" />
-
-
 
 ### Button Pad Wiring
 
-Open the inside control panel housing. Locate the POWER and WORK/START tactile switches. Use a multimeter in continuity mode to identify the two active terminals on each button. Solder a pair of 22 AWG silicone wires to each button and route them to the roof alongside the existing harness.
+Open the inside control panel housing. Locate the POWER and WORK/START tactile switches. Use a multimeter in continuity mode to identify the two active terminals on each button. Solder a pair of 22 AWG wires to each button and route them to the roof alongside the existing harness.
 
 At the relay board, connect POWER button wires to Relay 1: COM1 and NO1. Connect WORK button wires to Relay 2: COM2 and NO2. NC terminals are left unconnected.
 
-### Control board for reference
+### Control board face for reference
 <img width="363" height="543" alt="image" src="https://github.com/user-attachments/assets/9d61a30b-6bd1-423e-93b8-85498705a4d1" />
 
 ### Control board with wires attached
 <img width="355" height="483" alt="image" src="https://github.com/user-attachments/assets/0b86e3fb-8a0e-4847-90b3-780d7c083c81" />
 
+### Relay Board
+<img width="630" height="428" alt="image" src="https://github.com/user-attachments/assets/bfc76d29-a452-4ea4-b5c3-27d5fe7b6fd2" />
+
+### AMS1117
+The AMS1117 takes 5V from the relay board's header pin and outputs 3.3V. Connect the 100µF capacitor across the 3.3V output. Connect AMS1117 3.3V/GND output to ESP-01 and DS18B20.
+
 ### Temperature Sensor Wiring
-The DS18B20 module VCC and GND are powered from the AMS1117 3.3V output, the same as the ESP-01. Only the data wire connects to ESP-01 GPIO2.
+Only the data wire connects to ESP-01 GPIO2.
 
-The DS18B20 probe is mounted using aluminum tape in the opening left by the removed 3.5mm aux jack on the inside control panel. The sauna has built-in Bluetooth for audio so the aux port is not needed.
+The DS18B20 probe is mounted using aluminum tape in the opening left by the removed 3.5mm aux jack on the inside of the sauna. The sauna has built-in Bluetooth for audio so the aux port is not needed in my use case.
 <img width="471" height="339" alt="image" src="https://github.com/user-attachments/assets/b3eb4b90-1863-4cc1-ab94-b93eaa74d8b0" />
-
-
-### AMS1117 and Temp ESP-01 Power
-
-The AMS1117 takes 5V from the relay board's header pin and outputs 3.3V. Connect the 100µF capacitor across the 3.3V output. Connect AMS1117 3.3V output to ESP-01 VCC, and GND to ESP-01 GND.
 
 ---
 
