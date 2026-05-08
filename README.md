@@ -266,7 +266,7 @@ sensor:
 Here is how I setup my controls for the Sauna in Home Assistant. I use a general dashboard with quick controls and pop up cards on my phone for anything manual.
 
 - I assume anything above 1000w means the sauna is on, draws ~1600w while heating. Theoretically you could turn off the heat and it would still be on but I dont have a use case for that. This also controls an automation for notification of the Sauna being on for too long.
-- I plan on adding a feature to the start/scheduling portion to send a notification to the user that started the sauna when it is pre-heated to about 130F.
+- ~~I plan on adding a feature to the start/scheduling portion to send a notification to the user that started the sauna when it is pre-heated to about 130F.~~ Finished this - located below the controls yaml.
 
 ### Example of controller - Sauna OFF
 <img width="567" height="486" alt="image" src="https://github.com/user-attachments/assets/6bcd0e8e-149d-4f7d-861d-f0c111f24ff4" />
@@ -428,6 +428,91 @@ cards:
         }
 ```
 
+### Automation for notifying the user that initiated the Sauna of target temp
+- Create a Text Helper named "Sauna Initiated By" with max length of 255 characters.
+- Find your User ID's and the notification services - UUID is in Settings -> People -> Users -> Click a user -> At the top. Notification service should be in the mobile app device.
+
+### Automation YAML for Capturing a manual start
+```yaml
+- alias: "Sauna - Capture Manual Start User"
+  description: Stores the HA user who pressed the Start button
+  trigger:
+    - platform: state
+      entity_id: button.sauna_sauna_start
+  action:
+    - service: input_text.set_value
+      target:
+        entity_id: input_text.sauna_initiated_by
+      data:
+        value: "{{ trigger.to_state.context.user_id }}"
+```
+
+### Automation YAML for Capturing a Scheduled Start
+```yaml
+- alias: "Sauna - Capture Schedule User"
+  description: Stores the HA user who enabled the sauna schedule
+  trigger:
+    - platform: state
+      entity_id: input_boolean.sauna_schedule_enabled
+      to: "on"
+  action:
+    - service: input_text.set_value
+      target:
+        entity_id: input_text.sauna_initiated_by
+      data:
+        value: "{{ trigger.to_state.context.user_id }}"
+```
+
+### Automation YAML for sending the notification
+```yaml
+- alias: "Sauna - Ready Notification at [ENTER TEMP]°F"
+  description: Notifies only the user who started the sauna when it reaches temp
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.sauna_temperature_sauna_temperature
+      above: [ENTER TEMP]
+  condition:
+    - condition: numeric_state
+      entity_id: sensor.sauna_power_power
+      above: 1000
+  action:
+    - variables:
+        # Replace with your actual user UUIDs and companion app notify service names
+        user_notify_map:
+          "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx": "notify.mobile_app_user"
+          "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy": "notify.mobile_app_other_user"
+        initiated_by: "{{ states('input_text.sauna_initiated_by') }}"
+        notify_target: >
+          {{ user_notify_map.get(initiated_by, 'notify.persistent_notification') }}
+    - service: "{{ notify_target }}"
+      data:
+        title: "🔥 Sauna is Ready!"
+        message: >
+          Sauna has reached [ENTER TEMP]°F
+          ({{ states('sensor.sauna_temperature_sauna_temperature') | round(0) }}°F).
+          Enjoy your session!
+    - service: input_text.set_value
+      target:
+        entity_id: input_text.sauna_initiated_by
+      data:
+        value: ""
+```
+
+### Automation to clear UUID if manual stop
+```yaml
+- alias: "Sauna - Clear Initiated By on Shutoff"
+  description: Clears the stored user when the sauna stops heating
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.sauna_power_power
+      below: 1000
+  action:
+    - service: input_text.set_value
+      target:
+        entity_id: input_text.sauna_initiated_by
+      data:
+        value: ""
+```
 ---
 
 ## Credits and References
