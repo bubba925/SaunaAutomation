@@ -80,7 +80,6 @@ The Shelly exposes three entities to Home Assistant automatically via its native
 ## Wiring
 
 ### 12V Power Tap
-
 The roof power supply box has labeled connectors. The two connectors silkscreened "12V" on the power supply are switched — only live when the sauna is already powered on. These are not suitable.
 
 The correct 12V source is a pair of wires on the 10-pin Micro-Fit 3.0 harness running between the inside control panel and the roof power supply. On this build the correct pair was the **black and green wire**. This was confirmed by probing with a multimeter in idle state and verifying heater operation was not interrupted when the pair was loaded. Create a Y-splice using a Micro-Fit 3.0 pass-through cable — do not cut the original harness.
@@ -89,17 +88,13 @@ The correct 12V source is a pair of wires on the 10-pin Micro-Fit 3.0 harness ru
 
 
 ### Buck Converter
-
 Connect the 12V pair to the INPUT terminals of the buck converter. Verify 5.0V at the OUTPUT terminals. Connect the 680µF electrolytic capacitor across the OUTPUT terminals observing polarity (long leg to positive). This prevents both ESPs from failing to boot when AC power is restored due to slow voltage ramp-up.
 <img width="564" height="410" alt="image" src="https://github.com/user-attachments/assets/927f8ea2-84af-451b-a462-7d412c43e047" />
 
-
 ### Relay Board Power
-
 Connect buck converter 5V and GND outputs to the IN+ and IN- screw terminals on the LC Technology relay board. The AMS1117 3.3V regulator for the temperature ESP-01 is powered from the **5V pin on the right-side header of the relay board**, not directly from the buck converter.
 
 ### Button Pad Wiring
-
 Open the inside control panel housing. Locate the POWER and WORK/START tactile switches. Use a multimeter in continuity mode to identify the two active terminals on each button. Solder a pair of 22 AWG wires to each button and route them to the roof alongside the existing harness.
 
 At the relay board, connect POWER button wires to Relay 1: COM1 and NO1. Connect WORK button wires to Relay 2: COM2 and NO2. NC terminals are left unconnected.
@@ -115,8 +110,6 @@ At the relay board, connect POWER button wires to Relay 1: COM1 and NO1. Connect
 
 ### AMS1117
 The AMS1117 takes 5V from the relay board's header pin and outputs 3.3V. Connect the 100µF capacitor across the 3.3V output. Connect AMS1117 3.3V/GND output to ESP-01 and DS18B20.
-<img width="412" height="503" alt="image" src="https://github.com/user-attachments/assets/7573d3f6-0015-4aa0-a9d3-19dc7e80b9d8" />
-(Will get a better picture but the top small board is the AMS1117, right board is ESP-01 and Center is the DS18B20 board with a built in resistor.
 
 ### Temperature Sensor Wiring
 Only the data wire connects to ESP-01 GPIO2.
@@ -124,6 +117,14 @@ Only the data wire connects to ESP-01 GPIO2.
 The DS18B20 probe is mounted using aluminum tape in the opening left by the removed 3.5mm aux jack on the inside of the sauna. The sauna has built-in Bluetooth for audio so the aux port is not needed in my use case.
 <img width="471" height="339" alt="image" src="https://github.com/user-attachments/assets/b3eb4b90-1863-4cc1-ab94-b93eaa74d8b0" />
 
+
+### Everything all together mounted on a PCB back plate screwed into some scrap wood
+<img width="853" height="658" alt="image" src="https://github.com/user-attachments/assets/48593135-186a-4073-bb3f-3ab51c64109a" />
+
+- Top left is the DS18B20 board
+- Bottom left is the ESP8266 relay board
+- Top right is the 12v to 5v DC step down transformer
+- Bottom right is the AMS1117 converter and ESP-01
 ---
 
 ## ESPHome Configuration
