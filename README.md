@@ -314,7 +314,7 @@ cards:
       }
   - type: custom:mushroom-template-card
     primary: |-
-      {% if states('sensor.sauna_power_power') | float > 1000 %}
+      {% if states('sensor.sauna_power_power') | float(0) > 1000 %}
         🔥 Sauna is Heating
       {% else %}
         ❄️ Sauna is Off
@@ -326,13 +326,13 @@ cards:
               {{ states('sensor.sauna_temperature_sauna_temperature') | round(0) }}°F · Ready to start ({{ states('sensor.sauna_power_power') | float(0) | round(0) }}W)
             {% endif %}
     icon: |-
-      {% if states('sensor.sauna_power_power') | float > 1000 %}
+      {% if states('sensor.sauna_power_power') | float(0) > 1000 %}
         mdi:heat-wave
       {% else %}
         mdi:sauna
       {% endif %}
     color: |-
-      {% if states('sensor.sauna_power_power') | float > 1000 %}
+      {% if states('sensor.sauna_power_power') | float(0) > 1000 %}
         deep-orange
       {% else %}
         grey
@@ -341,7 +341,7 @@ cards:
     card_mod:
       style: |
         ha-card {
-          {% if states('sensor.sauna_power_power') | float > 1000 %}
+          {% if states('sensor.sauna_power_power') | float(0) > 1000 %}
           background: linear-gradient(135deg, rgba(255, 87, 34, 0.25), rgba(255, 138, 101, 0.15));
           border: 1px solid rgba(255, 87, 34, 0.4);
           box-shadow: 0 4px 12px rgba(255, 87, 34, 0.3);
